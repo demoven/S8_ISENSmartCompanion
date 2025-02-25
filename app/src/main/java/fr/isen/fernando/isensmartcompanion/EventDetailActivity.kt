@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import fr.isen.fernando.isensmartcompanion.models.EventModel
 import fr.isen.fernando.isensmartcompanion.ui.theme.ISENSmartCompanionTheme
 
 class EventDetailActivity : ComponentActivity() {

@@ -16,8 +16,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
 import fr.isen.fernando.isensmartcompanion.TabBarItem
 
-class BottomNavigation {
-
     @Composable
     fun TabView(tabBarItems: List<TabBarItem>, navController: NavController) {
         var selectedTabIndex by rememberSaveable {
@@ -73,5 +71,3 @@ class BottomNavigation {
             }
         }
     }
-
-}

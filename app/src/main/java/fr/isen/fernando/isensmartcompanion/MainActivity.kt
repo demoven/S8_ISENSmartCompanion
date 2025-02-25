@@ -1,7 +1,9 @@
 package fr.isen.fernando.isensmartcompanion
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -17,10 +19,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import fr.isen.fernando.isensmartcompanion.screens.BottomNavigation
-import fr.isen.fernando.isensmartcompanion.screens.EventsScreen
+import fr.isen.fernando.isensmartcompanion.models.EventModel
+import fr.isen.fernando.isensmartcompanion.screens.EventScreen
 import fr.isen.fernando.isensmartcompanion.screens.HistoryScreen
-import fr.isen.fernando.isensmartcompanion.screens.MainScreen
+import fr.isen.fernando.isensmartcompanion.screens.MessageCard
+import fr.isen.fernando.isensmartcompanion.screens.TabView
 import fr.isen.fernando.isensmartcompanion.ui.theme.ISENSmartCompanionTheme
 
 data class TabBarItem(
@@ -36,8 +39,7 @@ class MainActivity : ComponentActivity() {
             super.onCreate(savedInstanceState)
             enableEdgeToEdge()
             setContent {
-                val mainScreen = MainScreen()
-                mainScreen.MessageCard(getString(R.string.app_name))
+                MessageCard(getString(R.string.app_name))
 
                 val homeTab = TabBarItem(title = "Home", selectedIcon = Icons.Filled.Home, unselectedIcon = Icons.Outlined.Home)
                 val eventsTab = TabBarItem(title = "Events", selectedIcon = Icons.Filled.Notifications, unselectedIcon = Icons.Outlined.Notifications, badgeAmount = 7)
@@ -51,12 +53,16 @@ class MainActivity : ComponentActivity() {
                     Scaffold(
 
                         bottomBar = {
-                            BottomNavigation().TabView(tabBarItems, navController)
+                            TabView(tabBarItems, navController)
                         }
                     ) {
                         NavHost(navController = navController, startDestination = homeTab.title) {
-                            composable(homeTab.title) { MainScreen().MessageCard(getString(R.string.app_name)) }
-                            composable(eventsTab.title) { EventsScreen().EventScreen() }
+                            composable(homeTab.title) { MessageCard(getString(R.string.app_name)) }
+                            composable(eventsTab.title) {
+                                EventScreen(eventHandler = {
+                                    event -> startEventDataActivity(event)
+                                })
+                            }
                             composable(historyTab.title) { HistoryScreen() }
                         }
                     }
@@ -64,4 +70,31 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+    fun startEventDataActivity(event: EventModel){
+        val intent = Intent(this, EventDetailActivity::class.java).apply {
+          putExtra("event", event)
+        }
+        startActivity(intent)
+    }
+
+//    override fun onResume() {
+//        super.onResume()
+//        Log.d("lifecycle","Main Resmue")
+//    }
+//
+//    override fun onRestart() {
+//        super.onRestart()
+//        Log.d("lifecycle","Main Restart")
+//    }
+//
+//    override fun onDestroy() {
+//        Log.d("lifecycle","Main destroy")
+//        super.onDestroy()
+//
+//    }
+//
+//    override fun onStop() {
+//        Log.d("lifecycle","Main stop")
+//        super.onStop()
+//    }
 }

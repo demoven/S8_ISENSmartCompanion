@@ -37,9 +37,6 @@ import androidx.compose.ui.unit.dp
 import fr.isen.fernando.isensmartcompanion.R
 import fr.isen.fernando.isensmartcompanion.ui.theme.ISENSmartCompanionTheme
 
-class MainScreen {
-
-
     @Composable
     fun MessageCard(title: String) {
         val context = LocalContext.current
@@ -119,5 +116,3 @@ class MainScreen {
             )
         }
     }
-
-}
