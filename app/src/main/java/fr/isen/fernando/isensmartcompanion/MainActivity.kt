@@ -72,7 +72,7 @@ class MainActivity : ComponentActivity() {
 
     fun startEventDataActivity(event: EventModel){
         val intent = Intent(this, EventDetailActivity::class.java).apply {
-          putExtra("event", event)
+          putExtra(EventDetailActivity.eventExtraKey, event)
         }
         startActivity(intent)
     }
