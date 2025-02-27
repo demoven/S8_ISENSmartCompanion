@@ -82,10 +82,13 @@ class MainActivity : ComponentActivity() {
         call.enqueue(object: Callback<List<EventModel>> {
 
             override fun onResponse(p0: Call<List<EventModel>>, p1: Response<List<EventModel>>) {
-                Log.d("Fetch events", p1.body().toString())
-                p1.body()?.forEach{
-                    Log.d("request", "event: ${it.title}")
-                }
+               if (p1.isSuccessful){
+                   val events = p1.body()
+                   if (events != null){
+                       EventModel.updateEvents(events)
+
+                   }
+               }
             }
             override fun onFailure(p0: Call<List<EventModel>>, p1: Throwable) {
                 Log.d("Fetch events","onFailure" )

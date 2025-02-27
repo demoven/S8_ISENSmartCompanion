@@ -21,7 +21,7 @@ import fr.isen.fernando.isensmartcompanion.models.EventModel
     fun EventScreen(eventHandler: (EventModel) -> Unit) {
 
         Column (modifier = Modifier.padding(top = 40.dp)){
-           val events = EventModel.fakeEvents()
+           val events = EventModel.getEvents()
             LazyColumn {
                 items(events){ event ->
                     EventRow(event, eventHandler)
