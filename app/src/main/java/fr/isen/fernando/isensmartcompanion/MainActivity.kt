@@ -19,16 +19,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import fr.isen.fernando.isensmartcompanion.api.NetworkManager
 import fr.isen.fernando.isensmartcompanion.models.EventModel
 import fr.isen.fernando.isensmartcompanion.screens.EventScreen
 import fr.isen.fernando.isensmartcompanion.screens.HistoryScreen
 import fr.isen.fernando.isensmartcompanion.screens.MessageCard
 import fr.isen.fernando.isensmartcompanion.screens.TabView
 import fr.isen.fernando.isensmartcompanion.ui.theme.ISENSmartCompanionTheme
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 data class TabBarItem(
     val title: String,
@@ -42,7 +38,6 @@ class MainActivity : ComponentActivity() {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             enableEdgeToEdge()
-            fetchEvents()
             setContent {
                 MessageCard(getString(R.string.app_name))
 
@@ -74,29 +69,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
-    fun fetchEvents() {
-        Log.d("Fetch Events", "Fetch events")
-        val call = NetworkManager.api.getEvents()
-        Log.d("Fetch Events"," After call")
-        call.enqueue(object: Callback<List<EventModel>> {
-
-            override fun onResponse(p0: Call<List<EventModel>>, p1: Response<List<EventModel>>) {
-               if (p1.isSuccessful){
-                   val events = p1.body()
-                   if (events != null){
-                       EventModel.updateEvents(events)
-
-                   }
-               }
-            }
-            override fun onFailure(p0: Call<List<EventModel>>, p1: Throwable) {
-                Log.d("Fetch events","onFailure" )
-                Log.e("request", p1.message ?: "request fail")
-            }
-
-        })
-    }
 
     fun startEventDataActivity(event: EventModel){
         val intent = Intent(this, EventDetailActivity::class.java).apply {
