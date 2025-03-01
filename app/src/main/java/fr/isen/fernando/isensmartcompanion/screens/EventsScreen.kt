@@ -48,7 +48,6 @@ import retrofit2.Response
                 items(events.value){ event ->
                     EventRow(event, eventHandler)
                     }
-
                 }
             }
         }

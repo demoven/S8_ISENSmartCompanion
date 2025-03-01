@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -80,7 +81,8 @@ import kotlinx.coroutines.launch
 
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
+                    .background(Color.Yellow),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
@@ -90,15 +92,18 @@ import kotlinx.coroutines.launch
                 )
                 Text(text = title, textAlign = TextAlign.Center)
             }
-            Column (modifier = Modifier.padding(top = 40.dp)){
+            Column (
+                modifier = Modifier
+                    .padding(top = 40.dp)
+                    .background(Color.Red)
+
+            ){
                 LazyColumn {
-                    items(historyAI){ content ->
-                        Log.d("Content", content.role.toString())
-                        chatRow(content)
+                    items(chats){ chat ->
+                        chatRow(chat)
                     }
                 }
             }
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -107,6 +112,7 @@ import kotlinx.coroutines.launch
                     .clip(RoundedCornerShape(16.dp))
                     .background(Color.LightGray)
                     .padding(8.dp)
+                    .background(Color.Green)
 
             ) {
                 TextField(
@@ -141,12 +147,6 @@ import kotlinx.coroutines.launch
                                         )
                                         chats.add(ChatModel("user", userInput.value))
                                         chats.add(ChatModel("model", message.text.toString()))
-                                        Log.d("Chats", chats.joinToString (", "))
-
-
-
-
-                                        Log.d("GEMINI", message.text.toString())
                                     }
                                 }
                             },
@@ -166,12 +166,17 @@ import kotlinx.coroutines.launch
     }
 
 @Composable
-fun chatRow(content: Content) {
-    Card (
+fun chatRow(chat: ChatModel) {
+    Card(
         modifier = Modifier
             .padding(16.dp)
-    ){
-
+    ) {
+        Column {
+            Text(
+                text = chat.message,
+                modifier = Modifier.padding(8.dp)
+            )
+        }
     }
 }
 
