@@ -2,27 +2,19 @@ package fr.isen.fernando.isensmartcompanion.screens
 
 
 import android.annotation.SuppressLint
-import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -74,15 +66,8 @@ import kotlinx.coroutines.launch
     var historyAI by remember { mutableStateOf<List<Content>>(listOf())}
     var chats = remember{ mutableStateListOf<ChatModel>()}
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-
-        ) {
             Column(
-                modifier = Modifier.fillMaxWidth()
-                    .background(Color.Yellow),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
@@ -91,28 +76,22 @@ import kotlinx.coroutines.launch
                     modifier = Modifier.size(150.dp)
                 )
                 Text(text = title, textAlign = TextAlign.Center)
-            }
-            Column (
-                modifier = Modifier
-                    .padding(top = 40.dp)
-                    .background(Color.Red)
-
-            ){
-                LazyColumn {
-                    items(chats){ chat ->
-                        chatRow(chat)
+                Row (modifier = Modifier.weight(0.5f)
+                    .fillMaxSize()){
+                    LazyColumn{
+                        items(chats){ chat ->
+                            chatRow(chat)
+                        }
                     }
                 }
-            }
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
                     .padding(bottom = 100.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .background(Color.LightGray)
                     .padding(8.dp)
-                    .background(Color.Green)
 
             ) {
                 TextField(
@@ -146,7 +125,9 @@ import kotlinx.coroutines.launch
                                             content(role = "model"){text(message.text.toString())}
                                         )
                                         chats.add(ChatModel("user", userInput.value))
+                                        userInput.value = ""
                                         chats.add(ChatModel("model", message.text.toString()))
+
                                     }
                                 }
                             },
@@ -163,7 +144,7 @@ import kotlinx.coroutines.launch
                 )
             }
         }
-    }
+}
 
 @Composable
 fun chatRow(chat: ChatModel) {
