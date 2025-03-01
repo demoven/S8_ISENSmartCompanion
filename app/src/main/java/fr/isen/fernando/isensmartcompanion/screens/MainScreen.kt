@@ -1,13 +1,17 @@
 package fr.isen.fernando.isensmartcompanion.screens
 
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,15 +20,23 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,13 +46,32 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.getString
+import com.google.ai.client.generativeai.BuildConfig
+import com.google.ai.client.generativeai.Chat
+import com.google.ai.client.generativeai.GenerativeModel
+import com.google.ai.client.generativeai.type.Content
+import com.google.ai.client.generativeai.type.content
 import fr.isen.fernando.isensmartcompanion.R
+import fr.isen.fernando.isensmartcompanion.models.ChatModel
+import fr.isen.fernando.isensmartcompanion.models.EventModel
 import fr.isen.fernando.isensmartcompanion.ui.theme.ISENSmartCompanionTheme
+import kotlinx.coroutines.launch
 
-    @Composable
+@SuppressLint("SuspiciousIndentation")
+@Composable
     fun MessageCard(title: String) {
         val context = LocalContext.current
         var userInput = remember { mutableStateOf("") }
+
+    val generativeModel = GenerativeModel(
+        modelName = "gemini-1.5-flash",
+        apiKey = "AIzaSyDdrM0fHqVaolZSadXvI0qcbCs-kHh-4ck"
+    )
+    var responseText by remember{ mutableStateOf<String?>(null)}
+    val coroutineScope = rememberCoroutineScope()
+    var historyAI by remember { mutableStateOf<List<Content>>(listOf())}
+    var chats = remember{ mutableStateListOf<ChatModel>()}
 
         Box(
             modifier = Modifier
@@ -58,6 +89,14 @@ import fr.isen.fernando.isensmartcompanion.ui.theme.ISENSmartCompanionTheme
                     modifier = Modifier.size(150.dp)
                 )
                 Text(text = title, textAlign = TextAlign.Center)
+            }
+            Column (modifier = Modifier.padding(top = 40.dp)){
+                LazyColumn {
+                    items(historyAI){ content ->
+                        Log.d("Content", content.role.toString())
+                        chatRow(content)
+                    }
+                }
             }
 
             Row(
@@ -87,9 +126,29 @@ import fr.isen.fernando.isensmartcompanion.ui.theme.ISENSmartCompanionTheme
                             onClick = {
                                 Toast.makeText(
                                     context,
-                                    "User input : ${userInput.value}",
+                                    "${getString(context, R.string.user_input)} : ${userInput.value}",
                                     Toast.LENGTH_LONG
                                 ).show()
+                                if(userInput.value != "") {
+                                    coroutineScope.launch {
+                                        val chat = generativeModel.startChat(
+                                            history = historyAI
+                                        )
+                                        val message = chat.sendMessage(userInput.value)
+                                        historyAI = historyAI + listOf(
+                                            content(role = "user"){text(userInput.value)},
+                                            content(role = "model"){text(message.text.toString())}
+                                        )
+                                        chats.add(ChatModel("user", userInput.value))
+                                        chats.add(ChatModel("model", message.text.toString()))
+                                        Log.d("Chats", chats.joinToString (", "))
+
+
+
+
+                                        Log.d("GEMINI", message.text.toString())
+                                    }
+                                }
                             },
                             modifier = Modifier
                                 .size(20.dp)
@@ -97,7 +156,7 @@ import fr.isen.fernando.isensmartcompanion.ui.theme.ISENSmartCompanionTheme
                         ) {
                             Image(
                                 painter = painterResource(R.drawable.arrow_forward),
-                                contentDescription = "Envoyer"
+                                contentDescription = getString(context, R.string.envoyer)
                             )
                         }
                     }
@@ -106,6 +165,15 @@ import fr.isen.fernando.isensmartcompanion.ui.theme.ISENSmartCompanionTheme
         }
     }
 
+@Composable
+fun chatRow(content: Content) {
+    Card (
+        modifier = Modifier
+            .padding(16.dp)
+    ){
+
+    }
+}
 
     @Preview(showBackground = true)
     @Composable

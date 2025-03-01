@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.ai.client.generativeai.BuildConfig
 import fr.isen.fernando.isensmartcompanion.models.EventModel
 import fr.isen.fernando.isensmartcompanion.screens.EventScreen
 import fr.isen.fernando.isensmartcompanion.screens.HistoryScreen
@@ -41,9 +42,9 @@ class MainActivity : ComponentActivity() {
             setContent {
                 MessageCard(getString(R.string.app_name))
 
-                val homeTab = TabBarItem(title = "Home", selectedIcon = Icons.Filled.Home, unselectedIcon = Icons.Outlined.Home)
-                val eventsTab = TabBarItem(title = "Events", selectedIcon = Icons.Filled.Notifications, unselectedIcon = Icons.Outlined.Notifications, badgeAmount = 7)
-                val historyTab = TabBarItem(title = "History", selectedIcon = Icons.Filled.Settings, unselectedIcon = Icons.Outlined.Settings)
+                val homeTab = TabBarItem(title = getString(R.string.home), selectedIcon = Icons.Filled.Home, unselectedIcon = Icons.Outlined.Home)
+                val eventsTab = TabBarItem(title = getString(R.string.events), selectedIcon = Icons.Filled.Notifications, unselectedIcon = Icons.Outlined.Notifications, badgeAmount = 7)
+                val historyTab = TabBarItem(title = getString(R.string.history), selectedIcon = Icons.Filled.Settings, unselectedIcon = Icons.Outlined.Settings)
 
                 val tabBarItems = listOf(homeTab, eventsTab, historyTab)
 
