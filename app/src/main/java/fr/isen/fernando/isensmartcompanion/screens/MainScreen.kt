@@ -2,6 +2,7 @@ package fr.isen.fernando.isensmartcompanion.screens
 
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -40,20 +41,28 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.getString
+import androidx.room.Room
 import com.google.ai.client.generativeai.BuildConfig
 import com.google.ai.client.generativeai.Chat
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.Content
 import com.google.ai.client.generativeai.type.content
 import fr.isen.fernando.isensmartcompanion.R
+import fr.isen.fernando.isensmartcompanion.database.AppDatabase
+import fr.isen.fernando.isensmartcompanion.database.PairQuestionAnswer
 import fr.isen.fernando.isensmartcompanion.models.ChatModel
 import fr.isen.fernando.isensmartcompanion.models.EventModel
 import fr.isen.fernando.isensmartcompanion.ui.theme.ISENSmartCompanionTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
-    fun MessageCard(title: String) {
+    fun MessageCard(title: String, db: AppDatabase) {
         val context = LocalContext.current
         var userInput = remember { mutableStateOf("") }
 
@@ -65,6 +74,8 @@ import kotlinx.coroutines.launch
     val coroutineScope = rememberCoroutineScope()
     var historyAI by remember { mutableStateOf<List<Content>>(listOf())}
     var chats = remember{ mutableStateListOf<ChatModel>()}
+    val format = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -127,8 +138,10 @@ import kotlinx.coroutines.launch
                                         chats.add(ChatModel("user", userInput.value))
                                         userInput.value = ""
                                         chats.add(ChatModel("model", message.text.toString()))
-
-                                    }
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            db.pairDAO().insert(PairQuestionAnswer(question = userInput.value, answer = message.text.toString(), date = format.format(Date(System.currentTimeMillis()))))
+                                        }
+                                        }
                                 }
                             },
                             modifier = Modifier
@@ -160,13 +173,3 @@ fun chatRow(chat: ChatModel) {
         }
     }
 }
-
-    @Preview(showBackground = true)
-    @Composable
-    fun MessageCardPreview() {
-        ISENSmartCompanionTheme {
-            MessageCard(
-                "Smart Companion"
-            )
-        }
-    }

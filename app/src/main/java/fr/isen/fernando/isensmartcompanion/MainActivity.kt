@@ -20,6 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.ai.client.generativeai.BuildConfig
+import fr.isen.fernando.isensmartcompanion.database.AppDatabase
 import fr.isen.fernando.isensmartcompanion.models.EventModel
 import fr.isen.fernando.isensmartcompanion.screens.EventScreen
 import fr.isen.fernando.isensmartcompanion.screens.HistoryScreen
@@ -40,7 +41,8 @@ class MainActivity : ComponentActivity() {
             super.onCreate(savedInstanceState)
             enableEdgeToEdge()
             setContent {
-                MessageCard(getString(R.string.app_name))
+                val db = AppDatabase.getInstance(this)
+                MessageCard(getString(R.string.app_name), db)
 
                 val homeTab = TabBarItem(title = getString(R.string.home), selectedIcon = Icons.Filled.Home, unselectedIcon = Icons.Outlined.Home)
                 val eventsTab = TabBarItem(title = getString(R.string.events), selectedIcon = Icons.Filled.Notifications, unselectedIcon = Icons.Outlined.Notifications, badgeAmount = 7)
@@ -58,13 +60,13 @@ class MainActivity : ComponentActivity() {
                         }
                     ) {
                         NavHost(navController = navController, startDestination = homeTab.title) {
-                            composable(homeTab.title) { MessageCard(getString(R.string.app_name)) }
+                            composable(homeTab.title) { MessageCard(getString(R.string.app_name), db) }
                             composable(eventsTab.title) {
                                 EventScreen(eventHandler = {
                                     event -> startEventDataActivity(event)
                                 })
                             }
-                            composable(historyTab.title) { HistoryScreen() }
+                            composable(historyTab.title) { HistoryScreen(db) }
                         }
                     }
                 }
