@@ -17,7 +17,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import fr.isen.fernando.isensmartcompanion.api.NetworkManager
 import fr.isen.fernando.isensmartcompanion.models.EventModel
 import retrofit2.Call
@@ -55,17 +57,13 @@ import retrofit2.Response
 fun EventRow(event: EventModel, eventHandler:(EventModel) -> Unit) {
     Card (
         modifier = Modifier
-            .padding(16.dp)
+            .padding(8.dp)
             .clickable { eventHandler(event) }
     ){
         Column (modifier = Modifier.padding(16.dp)) {
-            Row (horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()) {
-                Text(event.title)
-                Text(event.date)
-            }
-
-            Text(event.description)
+            Text(event.title, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Text(event.date)
+            Text(event.description, modifier = Modifier.padding(top = 8.dp))
         }
     }
 }
