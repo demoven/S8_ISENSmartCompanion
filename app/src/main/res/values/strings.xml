@@ -3,8 +3,12 @@
     <string name="isen_logo">isen logo</string>
     <string name="title_activity_event_detail">EventDetailActivity</string>
     <string name="home" >Home</string>
-    <string name="events">events</string>
-    <string name="history">history</string>
+    <string name="events">Events</string>
+    <string name="history">History</string>
     <string name="user_input">User input</string>
-    <string name="envoyer">envoyer</string>
+    <string name="envoyer">Envoyer</string>
+    <string name="delete">Supprimer</string>
+    <string name="delete_all">Tout supprimer</string>
+    <string name="question">Question</string>
+    <string name="answer">Réponse</string>
 </resources>

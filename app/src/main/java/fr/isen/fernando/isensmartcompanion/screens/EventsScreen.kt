@@ -45,7 +45,7 @@ import retrofit2.Response
             })
         }
 
-        Column (modifier = Modifier.padding(top = 40.dp)){
+        Column (modifier = Modifier.padding(vertical = 52.dp)){
             LazyColumn {
                 items(events.value){ event ->
                     EventRow(event, eventHandler)

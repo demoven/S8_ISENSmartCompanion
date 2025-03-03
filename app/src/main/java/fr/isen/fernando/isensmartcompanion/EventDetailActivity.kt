@@ -57,7 +57,10 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 
 @Composable
 fun EventDetail(event:EventModel){
-    Column (modifier = Modifier.padding(48.dp)){
+    Column (modifier = Modifier
+        .padding(vertical = 48.dp)
+        .padding(horizontal = 16.dp)
+    ){
         Text(
             event.title,
             fontSize = 30.sp,

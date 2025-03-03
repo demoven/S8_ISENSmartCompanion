@@ -20,6 +20,9 @@ interface PairDAO {
     @Query("SELECT * FROM PairQuestionAnswer ORDER BY date ASC")
     suspend fun getOrderedQuestions(): List<PairQuestionAnswer>
 
+    @Query("DELETE FROM PairQuestionAnswer")
+    suspend fun deleteAll()
+
     @Insert
     suspend fun insertAll(vararg pairs: PairQuestionAnswer)
 
@@ -29,6 +32,4 @@ interface PairDAO {
     @Delete
     suspend fun delete(pair: PairQuestionAnswer)
 
-    @Delete
-    suspend fun deleteAll(vararg pairs: PairQuestionAnswer)
 }
