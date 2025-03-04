@@ -16,58 +16,62 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
 import fr.isen.fernando.isensmartcompanion.TabBarItem
 
-    @Composable
-    fun TabView(tabBarItems: List<TabBarItem>, navController: NavController) {
-        var selectedTabIndex by rememberSaveable {
-            mutableStateOf(0)
-        }
-
-        NavigationBar {
-            // looping over each tab to generate the views and navigation for each item
-            tabBarItems.forEachIndexed { index, tabBarItem ->
-                NavigationBarItem(
-                    selected = selectedTabIndex == index,
-                    onClick = {
-                        selectedTabIndex = index
-                        navController.navigate(tabBarItem.title)
-                    },
-                    icon = {
-                        TabBarIconView(
-                            isSelected = selectedTabIndex == index,
-                            selectedIcon = tabBarItem.selectedIcon,
-                            unselectedIcon = tabBarItem.unselectedIcon,
-                            title = tabBarItem.title,
-                            badgeAmount = tabBarItem.badgeAmount
-                        )
-                    },
-                    label = { Text(tabBarItem.title) })
-            }
-        }
+@Composable
+fun TabView(tabBarItems: List<TabBarItem>, navController: NavController) {
+    var selectedTabIndex by rememberSaveable {
+        mutableStateOf(0)
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun TabBarIconView(
-        isSelected: Boolean,
-        selectedIcon: ImageVector,
-        unselectedIcon: ImageVector,
-        title: String,
-        badgeAmount: Int? = null
-    ) {
-        BadgedBox(badge = { TabBarBadgeView(badgeAmount) }) {
-            Icon(
-                imageVector = if (isSelected) {selectedIcon} else {unselectedIcon},
-                contentDescription = title
-            )
+    NavigationBar {
+        // looping over each tab to generate the views and navigation for each item
+        tabBarItems.forEachIndexed { index, tabBarItem ->
+            NavigationBarItem(
+                selected = selectedTabIndex == index,
+                onClick = {
+                    selectedTabIndex = index
+                    navController.navigate(tabBarItem.title)
+                },
+                icon = {
+                    TabBarIconView(
+                        isSelected = selectedTabIndex == index,
+                        selectedIcon = tabBarItem.selectedIcon,
+                        unselectedIcon = tabBarItem.unselectedIcon,
+                        title = tabBarItem.title,
+                        badgeAmount = tabBarItem.badgeAmount
+                    )
+                },
+                label = { Text(tabBarItem.title) })
         }
     }
+}
 
-    @Composable
-    @OptIn(ExperimentalMaterial3Api::class)
-    fun TabBarBadgeView(count: Int? = null) {
-        if (count != null) {
-            Badge {
-                Text(count.toString())
-            }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TabBarIconView(
+    isSelected: Boolean,
+    selectedIcon: ImageVector,
+    unselectedIcon: ImageVector,
+    title: String,
+    badgeAmount: Int? = null
+) {
+    BadgedBox(badge = { TabBarBadgeView(badgeAmount) }) {
+        Icon(
+            imageVector = if (isSelected) {
+                selectedIcon
+            } else {
+                unselectedIcon
+            },
+            contentDescription = title
+        )
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+fun TabBarBadgeView(count: Int? = null) {
+    if (count != null) {
+        Badge {
+            Text(count.toString())
         }
     }
+}

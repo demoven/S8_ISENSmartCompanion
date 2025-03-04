@@ -52,104 +52,113 @@ import java.util.Locale
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
-    fun MessageCard(title: String, db: AppDatabase) {
-        val context = LocalContext.current
-        var userInput = remember { mutableStateOf("") }
+fun MessageCard(title: String, db: AppDatabase) {
+    val context = LocalContext.current
+    var userInput = remember { mutableStateOf("") }
 
     val generativeModel = GenerativeModel(
         modelName = "gemini-1.5-flash",
         apiKey = "AIzaSyDdrM0fHqVaolZSadXvI0qcbCs-kHh-4ck"
     )
     val coroutineScope = rememberCoroutineScope()
-    var historyAI by remember { mutableStateOf<List<Content>>(listOf())}
-    var chats = remember{ mutableStateListOf<ChatModel>()}
+    var historyAI by remember { mutableStateOf<List<Content>>(listOf()) }
+    var chats = remember { mutableStateListOf<ChatModel>() }
     val format = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding (vertical = 16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.isen_logo),
-                    contentDescription = context.getString(R.string.isen_logo),
-                    modifier = Modifier.size(150.dp)
-                )
-                Text(text = title, textAlign = TextAlign.Center)
-                Row (modifier = Modifier.weight(0.5f)
-                    .fillMaxSize()){
-                    LazyColumn{
-                        items(chats){ chat ->
-                            chatRow(chat)
-                        }
-                    }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = painterResource(R.drawable.isen_logo),
+            contentDescription = context.getString(R.string.isen_logo),
+            modifier = Modifier.size(150.dp)
+        )
+        Text(text = title, textAlign = TextAlign.Center)
+        Row(
+            modifier = Modifier
+                .weight(0.5f)
+                .fillMaxSize()
+        ) {
+            LazyColumn {
+                items(chats) { chat ->
+                    chatRow(chat)
                 }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 100.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(Color.LightGray)
-                    .padding(8.dp)
-
-            ) {
-                TextField(
-                    value = userInput.value,
-                    onValueChange = { userInput.value = it },
-                    colors = TextFieldDefaults.colors(
-                        unfocusedIndicatorColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent,
-                        errorContainerColor = Color.Transparent
-                    ),
-                    modifier = Modifier
-                        .weight(1f),
-                    trailingIcon = {
-                        IconButton(
-                            onClick = {
-                                var question = userInput.value
-                                userInput.value = ""
-                                Toast.makeText(
-                                    context,
-                                    "${getString(context, R.string.user_input)} : ${userInput.value}",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                                if(question != "") {
-                                    coroutineScope.launch {
-                                        val chat = generativeModel.startChat(
-                                            history = historyAI
-                                        )
-                                        val message = chat.sendMessage(question)
-                                        historyAI = historyAI + listOf(
-                                            content(role = "user"){text(question)},
-                                            content(role = "model"){text(message.text.toString())}
-                                        )
-                                        chats.add(ChatModel("user", question))
-                                        chats.add(ChatModel("model", message.text.toString()))
-                                        CoroutineScope(Dispatchers.IO).launch {
-                                            db.pairDAO().insert(PairQuestionAnswer(question = question, answer = message.text.toString(), date = format.format(Date(System.currentTimeMillis()))))
-                                        }
-
-                                        }
-                                }
-                            },
-                            modifier = Modifier
-                                .size(20.dp)
-                                .background(Color.Red, shape = CircleShape)
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.arrow_forward),
-                                contentDescription = getString(context, R.string.envoyer)
-                            )
-                        }
-                    }
-                )
             }
         }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 100.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(Color.LightGray)
+                .padding(8.dp)
+
+        ) {
+            TextField(
+                value = userInput.value,
+                onValueChange = { userInput.value = it },
+                colors = TextFieldDefaults.colors(
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    errorContainerColor = Color.Transparent
+                ),
+                modifier = Modifier
+                    .weight(1f),
+                trailingIcon = {
+                    IconButton(
+                        onClick = {
+                            var question = userInput.value
+                            Toast.makeText(
+                                context,
+                                "${getString(context, R.string.user_input)} : ${userInput.value}",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            userInput.value = ""
+                            if (question != "") {
+                                coroutineScope.launch {
+                                    val chat = generativeModel.startChat(
+                                        history = historyAI
+                                    )
+                                    val message = chat.sendMessage(question)
+                                    historyAI = historyAI + listOf(
+                                        content(role = "user") { text(question) },
+                                        content(role = "model") { text(message.text.toString()) }
+                                    )
+                                    chats.add(ChatModel("user", question))
+                                    chats.add(ChatModel("model", message.text.toString()))
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        db.pairDAO().insert(
+                                            PairQuestionAnswer(
+                                                question = question,
+                                                answer = message.text.toString(),
+                                                date = format.format(Date(System.currentTimeMillis()))
+                                            )
+                                        )
+                                    }
+
+                                }
+                            }
+                        },
+                        modifier = Modifier
+                            .size(20.dp)
+                            .background(Color.Red, shape = CircleShape)
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.arrow_forward),
+                            contentDescription = getString(context, R.string.envoyer)
+                        )
+                    }
+                }
+            )
+        }
+    }
 }
 
 @Composable

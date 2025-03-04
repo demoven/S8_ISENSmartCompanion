@@ -10,15 +10,11 @@ interface PairDAO {
     @Query("SELECT * FROM PairQuestionAnswer")
     suspend fun getAll(): List<PairQuestionAnswer>
 
-    @Query("SELECT * FROM PairQuestionAnswer WHERE id IN (:pairIds)")
-    suspend fun loadAllByIds(pairIds: IntArray): List<PairQuestionAnswer>
-
-    @Query("SELECT * FROM PairQuestionAnswer WHERE question LIKE :question AND " +
-           "answer LIKE :answer LIMIT 1")
+    @Query(
+        "SELECT * FROM PairQuestionAnswer WHERE question LIKE :question AND " +
+                "answer LIKE :answer LIMIT 1"
+    )
     suspend fun findByQuestionAnswer(question: String, answer: String): PairQuestionAnswer
-
-    @Query("SELECT * FROM PairQuestionAnswer ORDER BY date ASC")
-    suspend fun getOrderedQuestions(): List<PairQuestionAnswer>
 
     @Query("DELETE FROM PairQuestionAnswer")
     suspend fun deleteAll()

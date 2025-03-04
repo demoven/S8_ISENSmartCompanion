@@ -37,46 +37,58 @@ data class TabBarItem(
 )
 
 class MainActivity : ComponentActivity() {
-        @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            enableEdgeToEdge()
-            setContent {
-                val db = AppDatabase.getInstance(this)
-                MessageCard(getString(R.string.app_name), db)
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            val db = AppDatabase.getInstance(this)
+            MessageCard(getString(R.string.app_name), db)
 
-                val homeTab = TabBarItem(title = getString(R.string.home), selectedIcon = Icons.Filled.Home, unselectedIcon = Icons.Outlined.Home)
-                val eventsTab = TabBarItem(title = getString(R.string.events), selectedIcon = Icons.Filled.Notifications, unselectedIcon = Icons.Outlined.Notifications)
-                val historyTab = TabBarItem(title = getString(R.string.history), selectedIcon = Icons.Filled.Settings, unselectedIcon = Icons.Outlined.List)
+            val homeTab = TabBarItem(
+                title = getString(R.string.home),
+                selectedIcon = Icons.Filled.Home,
+                unselectedIcon = Icons.Outlined.Home
+            )
+            val eventsTab = TabBarItem(
+                title = getString(R.string.events),
+                selectedIcon = Icons.Filled.Notifications,
+                unselectedIcon = Icons.Outlined.Notifications
+            )
+            val historyTab = TabBarItem(
+                title = getString(R.string.history),
+                selectedIcon = Icons.Filled.Settings,
+                unselectedIcon = Icons.Outlined.List
+            )
 
-                val tabBarItems = listOf(homeTab, eventsTab, historyTab)
+            val tabBarItems = listOf(homeTab, eventsTab, historyTab)
 
-                val navController = rememberNavController()
+            val navController = rememberNavController()
 
-                ISENSmartCompanionTheme {
-                    Scaffold(
+            ISENSmartCompanionTheme {
+                Scaffold(
 
-                        bottomBar = {
-                            TabView(tabBarItems, navController)
+                    bottomBar = {
+                        TabView(tabBarItems, navController)
+                    }
+                ) {
+                    NavHost(navController = navController, startDestination = homeTab.title) {
+                        composable(homeTab.title) { MessageCard(getString(R.string.app_name), db) }
+                        composable(eventsTab.title) {
+                            EventScreen(eventHandler = { event ->
+                                startEventDataActivity(event)
+                            })
                         }
-                    ) {
-                        NavHost(navController = navController, startDestination = homeTab.title) {
-                            composable(homeTab.title) { MessageCard(getString(R.string.app_name), db) }
-                            composable(eventsTab.title) {
-                                EventScreen(eventHandler = {
-                                    event -> startEventDataActivity(event)
-                                })
-                            }
-                            composable(historyTab.title) { HistoryScreen(db) }
-                        }
+                        composable(historyTab.title) { HistoryScreen(db) }
                     }
                 }
             }
         }
+    }
 
-    fun startEventDataActivity(event: EventModel){
+    fun startEventDataActivity(event: EventModel) {
         val intent = Intent(this, EventDetailActivity::class.java).apply {
-          putExtra(EventDetailActivity.eventExtraKey, event)
+            putExtra(EventDetailActivity.eventExtraKey, event)
         }
         startActivity(intent)
     }

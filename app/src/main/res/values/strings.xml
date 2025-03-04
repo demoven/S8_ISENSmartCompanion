@@ -11,4 +11,8 @@
     <string name="delete_all">Tout supprimer</string>
     <string name="question">Question</string>
     <string name="answer">Réponse</string>
+    <string name="date">Date</string>
+    <string name="notification_icon">Notification icon</string>
+    <string name="calendar_icon">Calendar icon</string>
+    <string name="location_icon">Location icon</string>
 </resources>

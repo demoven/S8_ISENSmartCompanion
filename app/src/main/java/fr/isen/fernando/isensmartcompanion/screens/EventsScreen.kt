@@ -27,40 +27,41 @@ import retrofit2.Callback
 import retrofit2.Response
 
 @Composable
-    fun EventScreen(eventHandler: (EventModel) -> Unit) {
-        var events = remember{ mutableStateOf<List<EventModel>>(listOf())}
-        LaunchedEffect(Unit) {
-            val call = NetworkManager.api.getEvents()
-            call.enqueue(object: Callback<List<EventModel>>{
-                override fun onResponse(
-                    p0: Call<List<EventModel>>,
-                    p1: Response<List<EventModel>>
-                ) {
-                    events.value = p1.body()?: listOf()
-                }
+fun EventScreen(eventHandler: (EventModel) -> Unit) {
+    var events = remember { mutableStateOf<List<EventModel>>(listOf()) }
+    LaunchedEffect(Unit) {
+        val call = NetworkManager.api.getEvents()
+        call.enqueue(object : Callback<List<EventModel>> {
+            override fun onResponse(
+                p0: Call<List<EventModel>>,
+                p1: Response<List<EventModel>>
+            ) {
+                events.value = p1.body() ?: listOf()
+            }
 
-                override fun onFailure(p0: Call<List<EventModel>>, p1: Throwable) {
-                    Log.e("request", p1.message ?:"request")
-                }
-            })
-        }
+            override fun onFailure(p0: Call<List<EventModel>>, p1: Throwable) {
+                Log.e("request", p1.message ?: "request")
+            }
+        })
+    }
 
-        Column (modifier = Modifier.padding(vertical = 52.dp)){
-            LazyColumn {
-                items(events.value){ event ->
-                    EventRow(event, eventHandler)
-                    }
-                }
+    Column(modifier = Modifier.padding(vertical = 52.dp)) {
+        LazyColumn {
+            items(events.value) { event ->
+                EventRow(event, eventHandler)
             }
         }
+    }
+}
+
 @Composable
-fun EventRow(event: EventModel, eventHandler:(EventModel) -> Unit) {
-    Card (
+fun EventRow(event: EventModel, eventHandler: (EventModel) -> Unit) {
+    Card(
         modifier = Modifier
             .padding(8.dp)
             .clickable { eventHandler(event) }
-    ){
-        Column (modifier = Modifier.padding(16.dp)) {
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Text(event.title, fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Text(event.date)
             Text(event.description, modifier = Modifier.padding(top = 8.dp))

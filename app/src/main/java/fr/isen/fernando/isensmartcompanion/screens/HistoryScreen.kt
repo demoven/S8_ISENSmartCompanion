@@ -46,18 +46,37 @@ fun HistoryScreen(db: AppDatabase) {
         historyItems.addAll(datas)
     }
 
-    Column(modifier = Modifier.fillMaxWidth()
-        .padding(top = 40.dp)) {
-        Button(onClick = {
-            CoroutineScope(Dispatchers.IO).launch {
-                db.pairDAO().deleteAll()
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 40.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp),
+            horizontalArrangement = Arrangement.End
+        ) {
+
+
+            IconButton(
+                onClick = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        db.pairDAO().deleteAll()
+                    }
+                    CoroutineScope(Dispatchers.Main).launch {
+                        historyItems.clear()
+                    }
+                },
+                modifier = Modifier.padding(top = 10.dp)
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.trash),
+                    contentDescription = context.getString(R.string.delete_all),
+                    modifier = Modifier.size(24.dp),
+                    colorFilter = ColorFilter.tint(Color.Red)
+                )
             }
-            CoroutineScope(Dispatchers.Main).launch {
-                historyItems.clear()
-            }
-        },
-            modifier = Modifier.padding(top = 10.dp)) {
-            Text(getString(context, R.string.delete_all))
         }
 
         LazyColumn {
@@ -69,15 +88,23 @@ fun HistoryScreen(db: AppDatabase) {
 }
 
 @Composable
-fun pairRow(pair: PairQuestionAnswer, db: AppDatabase, historyItems: MutableList<PairQuestionAnswer>, context: Context) {
+fun pairRow(
+    pair: PairQuestionAnswer,
+    db: AppDatabase,
+    historyItems: MutableList<PairQuestionAnswer>,
+    context: Context
+) {
     Card(
         modifier = Modifier.padding(16.dp)
     ) {
-        Row (modifier = Modifier.fillMaxWidth()
-            .padding(8.dp),
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically){
-            Text("Date: ${pair.date}")
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("${context.getString(R.string.date)}: ${pair.date}")
             IconButton(onClick = {
                 CoroutineScope(Dispatchers.IO).launch {
                     db.pairDAO().delete(pair)
@@ -89,7 +116,7 @@ fun pairRow(pair: PairQuestionAnswer, db: AppDatabase, historyItems: MutableList
             {
                 Image(
                     painter = painterResource(R.drawable.xmark),
-                    contentDescription = context.getString(R.string.isen_logo),
+                    contentDescription = context.getString(R.string.delete),
                     modifier = Modifier.size(24.dp),
                     colorFilter = ColorFilter.tint(Color.Red)
                 )
@@ -97,7 +124,10 @@ fun pairRow(pair: PairQuestionAnswer, db: AppDatabase, historyItems: MutableList
         }
         Column(modifier = Modifier.padding(8.dp)) {
             Text("${getString(context, R.string.question)}: ${pair.question}")
-            Text(modifier = Modifier.padding(top=8.dp), text = "${getString(context, R.string.answer)}: ${pair.answer}")
+            Text(
+                modifier = Modifier.padding(top = 8.dp),
+                text = "${getString(context, R.string.answer)}: ${pair.answer}"
+            )
 
         }
     }

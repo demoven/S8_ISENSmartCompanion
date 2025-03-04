@@ -2,46 +2,25 @@ package fr.isen.fernando.isensmartcompanion.models
 
 import java.io.Serializable
 
-data class EventModel (
+data class EventModel(
     val id: String,
     val title: String,
     val description: String,
     val date: String,
     val location: String,
-    val category: String
-): Serializable
-{
+    val category: String,
+    var isNotified: Boolean = false
+) : Serializable {
 
     companion object {
         private var events: List<EventModel> = listOf()
 
-        fun updateEvents(newEvents: List<EventModel>){
+        fun updateEvents(newEvents: List<EventModel>) {
             events = newEvents
         }
 
-        fun getEvents(): List<EventModel>{
+        fun getEvents(): List<EventModel> {
             return events
         }
-
-//        fun fakeEvents(): List<EventModel>{
-//            return listOf(
-//                EventModel(
-//                "0d1d122c",
-//                "Journée de cohésion ISEN",
-//                "Un moment pour accueillir les nouveaux élèves et renforcer la cohésion entre les promotions avec des activités autour de la santé, l'écologie, et la vie associative.",
-//                "24 septembre 2024",
-//                "Plage du Mourillon",
-//                "Vie associative"
-//                ),
-//                EventModel(
-//                    "1e2d345a",
-//                    "Gala annuel de l'ISEN",
-//                    "Soirée prestigieuse organisée par le BDE pour célébrer les réussites de l'année dans une ambiance festive.",
-//                    "10 décembre 2024",
-//                    "Palais Neptune, Toulon",
-//                    "BDE"
-//                )
-//                )
-//        }
     }
 }
