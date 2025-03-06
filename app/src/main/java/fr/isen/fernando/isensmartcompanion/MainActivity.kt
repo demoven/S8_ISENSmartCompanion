@@ -3,7 +3,6 @@ package fr.isen.fernando.isensmartcompanion
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -14,13 +13,11 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.google.ai.client.generativeai.BuildConfig
 import fr.isen.fernando.isensmartcompanion.database.AppDatabase
 import fr.isen.fernando.isensmartcompanion.models.EventModel
 import fr.isen.fernando.isensmartcompanion.screens.EventScreen
