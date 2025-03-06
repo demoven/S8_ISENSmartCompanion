@@ -17,9 +17,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.IconButton
@@ -73,29 +75,49 @@ class EventDetailActivity : ComponentActivity() {
 @Composable
 fun EventDetail(event: EventModel, context: Context) {
     val isNotified = remember { mutableStateOf(getIsNotified(context, event.id)) }
+
+
     Column(
         modifier = Modifier
             .padding(vertical = 48.dp)
             .padding(horizontal = 16.dp)
     ) {
-        IconButton(onClick = {
-            isNotified.value = !isNotified.value
-            event.isNotified = isNotified.value
-            saveIsNotified(context, event.id, isNotified.value)
-            if (isNotified.value) {
-                sendNotification(context, event)
+        Row (
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            IconButton(onClick = {
+                // Close the activity et be back on the event list
+                context.startActivity(Intent(context, MainActivity::class.java))
+            })
+            {
+                Image(
+                    painter = painterResource(R.drawable.xmark),
+                    contentDescription = (context.getString(R.string.close)),
+                    modifier = Modifier
+                        .size(20.dp),
+                    colorFilter = ColorFilter.tint(Color.Red)
+                )
             }
-            Log.d("Notification", "Notification status: ${isNotified.value}")
-        })
-        {
-            Image(
-                painter = painterResource(R.drawable.bell),
-                contentDescription = (context.getString(R.string.notification_icon)),
-                modifier = Modifier
-                    .size(20.dp)
-                    .padding(end = 4.dp),
-                colorFilter = ColorFilter.tint(if (isNotified.value) Color.Green else Color.Red)
-            )
+
+            IconButton(onClick = {
+                isNotified.value = !isNotified.value
+                event.isNotified = isNotified.value
+                saveIsNotified(context, event.id, isNotified.value)
+                if (isNotified.value) {
+                    sendNotification(context, event)
+                }
+                Log.d("Notification", "Notification status: ${isNotified.value}")
+            })
+            {
+                Image(
+                    painter = painterResource(R.drawable.bell),
+                    contentDescription = (context.getString(R.string.notification_icon)),
+                    modifier = Modifier
+                        .size(20.dp),
+                    colorFilter = ColorFilter.tint(if (isNotified.value) Color.Green else Color.Red)
+                )
+            }
         }
         Text(
             event.title,

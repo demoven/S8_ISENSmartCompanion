@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -114,7 +115,7 @@ fun MessageCard(title: String, db: AppDatabase) {
                 trailingIcon = {
                     IconButton(
                         onClick = {
-                            var question = userInput.value
+                            val question = userInput.value
                             Toast.makeText(
                                 context,
                                 "${getString(context, R.string.user_input)} : ${userInput.value}",
@@ -152,7 +153,8 @@ fun MessageCard(title: String, db: AppDatabase) {
                     ) {
                         Image(
                             painter = painterResource(R.drawable.arrow_forward),
-                            contentDescription = getString(context, R.string.envoyer)
+                            contentDescription = getString(context, R.string.envoyer),
+                            colorFilter = ColorFilter.tint(Color.White)
                         )
                     }
                 }
