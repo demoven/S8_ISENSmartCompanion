@@ -92,11 +92,10 @@ fun EventDetail(event: EventModel, context: Context) {
             })
             {
                 Image(
-                    painter = painterResource(R.drawable.xmark),
+                    painter = painterResource(R.drawable.arrow_left),
                     contentDescription = (context.getString(R.string.close)),
                     modifier = Modifier
-                        .size(20.dp),
-                    colorFilter = ColorFilter.tint(Color.Red)
+                        .size(30.dp),
                 )
             }
 
@@ -114,7 +113,7 @@ fun EventDetail(event: EventModel, context: Context) {
                     painter = painterResource(R.drawable.bell),
                     contentDescription = (context.getString(R.string.notification_icon)),
                     modifier = Modifier
-                        .size(20.dp),
+                        .size(30.dp),
                     colorFilter = ColorFilter.tint(if (isNotified.value) Color.Green else Color.Red)
                 )
             }
